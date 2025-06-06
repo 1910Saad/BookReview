@@ -25,8 +25,8 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <Box maxWidth={400} mx="auto" mt={4}>
-      <Typography variant="h5" mb={2}>Login</Typography>
+    <Box maxWidth={400} mx="auto" mt={10} p={6} borderRadius={2} boxShadow={3}>
+      <Typography variant="h4" mb={4}>Login</Typography>
       {error && <Alert severity="error">{error}</Alert>}
       <form onSubmit={handleSubmit}>
         <TextField
@@ -48,7 +48,7 @@ const Login = ({ onLogin }) => {
           margin="normal"
           required
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 ,mb: 3 }}>
           Login
         </Button>
       </form>

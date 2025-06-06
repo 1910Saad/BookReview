@@ -33,8 +33,8 @@ const AddBook = () => {
   };
 
   return (
-    <Box maxWidth={500} mx="auto" mt={4}>
-      <Typography variant="h5" mb={2}>Add New Book</Typography>
+    <Box maxWidth={500} mx="auto" mt={11}>
+      <Typography variant="h4" mb={1} align='center'>Add New Book</Typography>
       {error && <Alert severity="error">{error}</Alert>}
       {success && <Alert severity="success">{success}</Alert>}
       <form onSubmit={handleSubmit}>
@@ -67,7 +67,7 @@ const AddBook = () => {
           multiline
           minRows={3}
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2, mb:4 }}>
           Add Book
         </Button>
       </form>

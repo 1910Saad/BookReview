@@ -7,7 +7,7 @@ const router = express.Router();
 // Get books with search and pagination
 router.get('/', async (req, res) => {
   try {
-    const { search = '', page = 1, limit = 9 } = req.query;
+    const { search = '', page = 1, limit = 4 } = req.query;
     const query = search ? { title: { $regex: search, $options: 'i' } } : {};
     const total = await Book.countDocuments(query);
     const books = await Book.find(query)
@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
 // GET /search – Search books by title or author (partial and case-insensitive)
 router.get('/search', async (req, res) => {
   try {
-    const { q = '', page = 1, limit = 9 } = req.query;
+    const { q = '', page = 1, limit = 4 } = req.query;
     const query = q ? {
       $or: [
         { title: { $regex: q, $options: 'i' } },

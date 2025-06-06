@@ -12,22 +12,25 @@ const BookList = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    setLoading(true);
-    axios.get('http://localhost:5000/api/books', {
-      params: { search, page }
-    })
-      .then(res => {
-        setBooks(res.data.books || res.data); // support both array and paginated
-        setTotalPages(res.data.totalPages || 1);
+    const delayDebounce = setTimeout(() => {
+      setLoading(true);
+      axios.get('http://localhost:5000/api/books', {
+        params: { search, page, limit: 4 } // Adjust limit as needed
       })
-      .catch(() => setBooks([]))
-      .finally(() => setLoading(false));
+        .then(res => {
+          setBooks(res.data.books || res.data); // support both array and paginated
+          setTotalPages(res.data.totalPages || 1);
+        })
+        .catch(() => setBooks([]))
+        .finally(() => setLoading(false));
+    }, 500); // Debounce for 500ms
+    return () => clearTimeout(delayDebounce);
   }, [search, page]);
 
   if (loading) return <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>;
 
   return (
-    <Box mt={4} display="flex" justifyContent="center">
+    <Box mt={7} display="flex" justifyContent="center">
       <Box width="100%" maxWidth={1000}>
         <Typography variant="h4" mb={3} align="center">Book List</Typography>
         <MuiTextField
@@ -44,10 +47,10 @@ const BookList = () => {
           fullWidth
           sx={{ mb: 3 }}
         />
-        <Grid container spacing={3} justifyContent="center">
+        <Grid container spacing={2} justifyContent="center">
           {books.map(book => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={book._id} display="flex">
-              <Card sx={{ width: '100%', minHeight: 150, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 2 }}>
+              <Card sx={{ minWidth: 200, minHeight: 200, maxWidth: 200, maxHeight: 200, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 1 }}>
                 <CardContent>
                   <Typography variant="h6" component={Link} to={`/books/${book._id}`} sx={{ textDecoration: 'none', color: 'inherit' }}>
                     {book.title}
