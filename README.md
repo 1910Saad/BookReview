@@ -5,7 +5,7 @@ A full-stack application for managing and reviewing books.
 ## Features
 
 - User authentication (sign up, log in)
-- Add, edit, and delete books (by the book's author)
+- Add books (by the book's author)
 - Add, edit, and delete reviews (by the review's author)
 - Search and pagination for books
 - View book details with reviews
@@ -16,9 +16,23 @@ A full-stack application for managing and reviewing books.
 ```
 BookReview/
 │
-├── client/   # React frontend
+├── client/                   # React frontend
+│   ├── src/
+|   |   ├── assets/
+│   │   ├── components/       # Reusable React components
+│   │   ├── pages/            # Page components (BookList, BookDetails, etc.)
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── public/
+│   └── package.json
 │
-├── server/   # Node.js/Express/MongoDB backend
+├── server/                   # Node.js/Express/MongoDB backend
+│   ├── models/               # Mongoose models (User, Book, Review)
+│   ├── routes/               # Express routes (auth, books, reviews)
+│   ├── middleware/           # Authentication middleware
+│   ├── controllers/          # Route controllers
+│   ├── index.js              # Entry point
+│   └── package.json
 │
 └── README.md
 ```
