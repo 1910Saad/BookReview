@@ -5,7 +5,7 @@ A full-stack application for managing and reviewing books.
 ## Features
 
 - User authentication (sign up, log in)
-- Add books (by the book's author)
+- Add edit, and delete books (by the book's author)
 - Add, edit, and delete reviews (by the review's author)
 - Search and pagination for books
 - View book details with reviews
