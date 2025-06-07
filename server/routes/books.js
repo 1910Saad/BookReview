@@ -47,20 +47,26 @@ router.get('/search', async (req, res) => {
 router.post('/:id/reviews', authenticate, async (req, res) => {
   try {
     const { comment } = req.body;
+    if (!comment || typeof comment !== 'string' || !comment.trim()) {
+      return res.status(400).json({ message: 'Comment is required' });
+    }
     const book = await Book.findById(req.params.id);
     if (!book) return res.status(404).json({ message: 'Book not found' });
     // Check if user already reviewed this book
     const existingReview = await Review.findOne({ book: book._id, user: req.user._id });
-    if (existingReview) return res.status(400).json({ message: 'You have already reviewed this book.' });
+    if (existingReview) return res.status(400).json({ message: 'You have already reviewed this book' });
     const review = await Review.create({
       user: req.user._id,
-      comment,
+      comment: comment.trim(),
       book: book._id
     });
     book.reviews.push(review._id);
     await book.save();
+    // Populate user field for immediate client use
+    await review.populate({ path: 'user', select: 'username' });
     res.status(201).json(review);
   } catch (err) {
+    console.error('Error adding review:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -70,31 +76,9 @@ router.get('/:id', async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
     const book = await Book.findById(req.params.id)
-      .populate({
-        path: 'reviews',
-        options: {
-          sort: { createdAt: -1 },
-          skip: (page - 1) * limit,
-          limit: Number(limit)
-        },
-        populate: { path: 'user', select: 'username' }
-      });
+      .populate({ path: 'reviews', populate: { path: 'user', select: 'username' } });
     if (!book) return res.status(404).json({ message: 'Book not found' });
-    // Calculate average rating (if you add ratings later)
-    // const avgRating = ...
-    let currentUser = null;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-      try {
-        const jwt = require('jsonwebtoken');
-        const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        currentUser = decoded.id;
-      } catch (e) {}
-    }
-    const bookObj = book.toObject();
-    bookObj.currentUser = currentUser;
-    // bookObj.avgRating = avgRating;
-    res.json(bookObj);
+    res.json(book);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -104,6 +88,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
   try {
     const { title, author, description } = req.body;
+    if (!title || !author) return res.status(400).json({ message: 'Title and author required' });
     const book = await Book.create({
       title,
       author,
@@ -125,9 +110,10 @@ router.put('/:id', authenticate, async (req, res) => {
     if (book.authorId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized' });
     }
-    book.title = req.body.title;
-    book.author = req.body.author;
-    book.description = req.body.description;
+    const { title, author, description } = req.body;
+    book.title = title;
+    book.author = author;
+    book.description = description;
     await book.save();
     res.json(book);
   } catch (err) {
@@ -143,6 +129,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     if (book.authorId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized' });
     }
+    // Delete all reviews for this book
     await Review.deleteMany({ book: book._id });
     await book.deleteOne();
     res.json({ message: 'Book deleted' });

@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CssBaseline, Container } from '@mui/material';
-import Header from './Header';
-import BookList from './BookList';
-import Signup from './Signup';
-import Login from './Login';
-import BookDetails from './BookDetails';
-import AddBook from './AddBook';
+import Header from './components/Header';
+import BookList from './pages/BookList';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import BookDetails from './pages/BookDetails';
+import AddBook from './pages/AddBook';
 import './App.css'
 
 function App() {
